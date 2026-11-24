@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Edukasi Anti Narkoba</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Identity Services SDK -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+    <div class="auth-box">
+        <div class="top-icons">
+            <span class="icon-badge" title="Perlindungan Diri"><i class="fas fa-shield-halved"></i></span>
+            <span class="icon-badge outline" title="Generasi Sehat"><i class="fas fa-seedling"></i></span>
+        </div>
+
+        <h2>LOGIN</h2>
+        <p class="subtitle">Masuk dengan kredensial Anda untuk melanjutkan.</p>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="username" placeholder="Username" required>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" placeholder="Password" required>
+                <i class="fas fa-eye toggle-eye" id="togglePassword"></i>
+            </div>
+
+            <!-- Tautan Forgot Password yang mengarah ke halaman reset password -->
+            <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
+
+            <!-- Tempat Pesan Error Berwarna Merah di Atas Tombol Login -->
+            <div id="errorMessage" style="color: #ff6b6b; font-size: 12.5px; margin-bottom: 15px; text-align: center; display: none;"></div>
+
+            <button type="submit" class="auth-btn" id="submitBtn">
+                <span>Login</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <div class="divider"><span>Quick Access</span></div>
+
+        <div class="quick-access" style="display: flex; justify-content: center; align-items: center; width: 100%;">
+            <!-- Google SSO Sign-In Button -->
+            <div id="g_id_onload"
+                data-client_id="74528517098-n29pe4c4f57kcvp85f0ereef9b93sdfg.apps.googleusercontent.com"
+                data-callback="handleCredentialResponse">
+            </div>
+            <div class="g_id_signin" data-type="standard" data-theme="outline" data-size="large" data-width="300"></div>
+        </div>
+
+        <p class="switch-link">
+            Don't have an account? <a href="register.html">Create Account</a>
+        </p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Edukasi Bahaya Narkoba</title>
+    <style>
+        :root {
+            --bg-main-gradient: linear-gradient(135deg, rgba(122, 12, 16, 0.92) 0%, rgba(74, 5, 18, 0.95) 55%, rgba(36, 4, 15, 0.98) 100%);
+            --bg-card-gradient: linear-gradient(145deg, rgba(97, 10, 13, 0.85) 0%, rgba(48, 4, 10, 0.9) 100%);
+            --bg-darker: #1a0208;
+            --accent-gold: #f3d068;
+            --accent-gold-hover: #ffdf7e;
+            --text-light: #f8f9fa;
+            --text-muted: #dcdcdc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-darker);
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(224, 176, 128, 0.14) 0%, transparent 45%),
+                radial-gradient(circle at 85% 75%, rgba(158, 22, 45, 0.25) 0%, transparent 50%),
+                linear-gradient(160deg, #2b0308 0%, #140106 50%, #240412 100%);
+            background-attachment: fixed;
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #e0b080 0%, #b58456 50%, #8c5d38 100%);
+            color: #2b1d11;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--bg-darker);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.7);
+            position: relative;
+            z-index: 10;
+        }
+
+        .header-title-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        header h1 {
+            font-family: 'Georgia', serif;
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.4);
+        }
+
+        .user-welcome-badge {
+            background: linear-gradient(135deg, #380507 0%, #1a0208 100%);
+            color: var(--accent-gold);
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(243, 208, 104, 0.45);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3), inset 0 1px 3px rgba(255,255,255,0.1);
+        }
+
+        .main-container {
+            flex: 1;
+            background: 
+                radial-gradient(circle at top right, rgba(243, 208, 104, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at bottom left, rgba(180, 25, 45, 0.18) 0%, transparent 50%),
+                var(--bg-main-gradient);
+            padding: 25px;
+            padding-bottom: 95px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .section-content {
+            display: none;
+        }
+
+        .section-content.active {
+            display: block;
+            animation: fadeIn 0.35s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dashboard-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--bg-card-gradient);
+            backdrop-filter: blur(8px);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(243, 208, 104, 0.5);
+            box-shadow: 0 10px 25px rgba(243, 208, 104, 0.12);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #420608 0%, #1c0208 100%);
+            width: 55px;
+            height: 55px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .stat-info h4 {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-info .stat-num {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--accent-gold);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 330px 1fr;
+            }
+        }
+
+        .card {
+            background: var(--bg-card-gradient);
+            backdrop-filter: blur(8px);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .profile-summary-card {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-circle {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f5d77f 0%, #c49c31 100%);
+            color: #2b1d11;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .avatar-large {
+            width: 110px;
+            height: 110px;
+            font-size: 2.8rem;
+        }
+
+        .user-stats {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-gold);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .player-widget h3 {
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            color: var(--accent-gold);
+        }
+
+        .widget-date {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .time-display {
+            font-size: 1.9rem;
+            font-weight: bold;
+            font-family: monospace;
+            margin-bottom: 4px;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .time-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 9px;
+            background: rgba(26, 2, 8, 0.85);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 18px;
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #d4a373 0%, var(--accent-gold) 100%);
+            transition: width 0.4s ease;
+        }
+
+        .mini-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .mini-btn {
+            flex: 1;
+            height: 42px;
+            background: linear-gradient(135deg, #3d0305 0%, #1c0106 100%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .mini-btn:hover {
+            background: linear-gradient(135deg, #610a0d 0%, #3b0406 100%);
+            border-color: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        .article-card {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        @media (min-width: 600px) {
+            .article-card {
+                flex-direction: row;
+            }
+        }
+
+        .article-img {
+            flex: 1;
+            background: #380507;
+            border-radius: 10px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-style: italic;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .article-text {
+            flex: 1.5;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .article-text h2 {
+            font-size: 1.3rem;
+            color: var(--accent-gold);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .article-text p {
+            font-size: 0.92rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        .bottom-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .sub-card {
+            background: var(--bg-card-gradient);
+            backdrop-filter: blur(8px);
+            height: 160px;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+            text-align: center;
+            padding: 18px;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .sub-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 12px 25px rgba(243, 208, 104, 0.15);
+        }
+
+        .sub-card b {
+            color: var(--accent-gold);
+            font-size: 1.05rem;
+        }
+
+        .explore-search-bar {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto 25px auto;
+            position: relative;
+        }
+
+        .explore-search-bar input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            background: rgba(26, 2, 8, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.4);
+            transition: border-color 0.25s;
+        }
+
+        .explore-search-bar input:focus {
+            border-color: var(--accent-gold);
+        }
+
+        .explore-search-bar input::placeholder {
+            color: #9e9e9e;
+        }
+
+        .explore-search-bar::before {
+            content: '🔍';
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.95rem;
+            opacity: 0.7;
+        }
+
+        .explore-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .explore-item {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+
+        .explore-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.88));
+            z-index: 1;
+        }
+
+        .explore-item > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .explore-item:hover {
+            transform: scale(1.04);
+            border-color: var(--accent-gold);
+            z-index: 5;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+        }
+
+        .explore-item-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.8rem;
+            background: rgba(0,0,0,0.7);
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .explore-item-title {
+            font-size: 0.88rem;
+            font-weight: bold;
+            color: white;
+            margin-top: 18px;
+            line-height: 1.3;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .explore-item-tag {
+            font-size: 0.72rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .reel-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .reel-modal-content {
+            background: var(--bg-card-gradient);
+            border: 2px solid var(--accent-gold);
+            border-radius: 18px;
+            width: 100%;
+            max-width: 520px;
+            padding: 35px;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+            animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.75); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: linear-gradient(135deg, #c72e35 0%, #8a171d 100%);
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+
+        .close-modal-btn:hover {
+            background: linear-gradient(135deg, #e03b42 0%, #a82228 100%);
+            transform: scale(1.05);
+        }
+
+        .quiz-container {
+            background: var(--bg-card-gradient);
+            backdrop-filter: blur(8px);
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 650px;
+            margin: 0 auto;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .quiz-container h2 {
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        .question-box {
+            font-size: 1.15rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            color: #ffffff;
+        }
+
+        .quiz-popup {
+            padding: 12px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 0.98rem;
+            text-align: center;
+            display: none;
+        }
+
+        .quiz-popup.success {
+            background-color: rgba(40, 167, 69, 0.25);
+            border: 1px solid #28a745;
+            color: #d4edda;
+        }
+
+        .quiz-popup.error {
+            background-color: rgba(220, 53, 69, 0.25);
+            border: 1px solid #dc3545;
+            color: #f8d7da;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: linear-gradient(135deg, #380507 0%, #1c0208 100%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.25s ease;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .option-btn:hover {
+            background: linear-gradient(135deg, #610a0d 0%, #3b0406 100%);
+            border-color: var(--accent-gold);
+            transform: translateX(4px);
+        }
+
+        .quiz-score {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--accent-gold);
+        }
+
+        .profile-details-card {
+            background: var(--bg-card-gradient);
+            backdrop-filter: blur(8px);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .info-group {
+            width: 100%;
+            background: linear-gradient(135deg, #380507 0%, #1c0208 100%);
+            padding: 14px 18px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .info-value {
+            color: white;
+            font-weight: bold;
+        }
+
+        nav.bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(180deg, #420608 0%, #1a0208 100%);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 2px solid rgba(243, 208, 104, 0.25);
+            box-shadow: 0 -6px 20px rgba(0,0,0,0.7);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.25s ease;
+            padding: 6px 18px;
+            border-radius: 10px;
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+            transition: transform 0.2s;
+        }
+
+        .nav-item.active {
+            color: var(--accent-gold);
+            background-color: rgba(243, 208, 104, 0.14);
+            transform: translateY(-3px);
+        }
+
+        .nav-item.active svg {
+            transform: scale(1.1);
+        }
+
+        .nav-item:hover {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title-box">
+            <span>🛡️</span>
+            <h1>Dashboard Edukasi</h1>
+        </div>
+        <div class="user-welcome-badge">
+            <span>👤</span>
+            <span id="headerUserName">Siswa Edukasi</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+
+        <section id="beranda" class="section-content active">
+            
+            <div class="dashboard-stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <h4>Total Poin Anda</h4>
+                        <div class="stat-num" id="statScoreTop">0 Pts</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-info">
+                        <h4>Achievement</h4>
+                        <div class="stat-num" id="statProgressTop">0%</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🛡️</div>
+                    <div class="stat-info">
+                        <h4>Status Akun</h4>
+                        <div class="stat-num" style="color: #4CAF50;">Aktif / Aman</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div class="card profile-summary-card">
+                        <div class="avatar-circle" id="userAvatar">S</div>
+                        <h3 id="profileName">Nama Pengguna</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);" id="profileEmail">user@example.com</p>
+                        
+                        <div class="user-stats">
+                            <div class="stat-item">
+                                <div class="stat-value" id="userScoreDisplay">0</div>
+                                <div class="stat-label">Skor Kuis</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">Aktif</div>
+                                <div class="stat-label">Status</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card player-widget">
+                        <h3>Status & Waktu Sesi</h3>
+                        <div class="widget-date">
+                            <span>📅</span> <span id="audioDate">24 Oktober 2026</span>
+                        </div>
+                        <div class="time-display" id="timer">00:00:00</div>
+                        <div class="time-label">WIB (Waktu Real-Time)</div>
+                        
+                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; display: flex; justify-content: space-between;">
+                            <span>Progress Achievement</span>
+                            <span id="progressText">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        
+                        <div class="mini-buttons">
+                            <button class="mini-btn" onclick="switchTab('quiz', document.querySelectorAll('.nav-item')[2])" style="background: linear-gradient(135deg, #e0b080 0%, #9c714d 100%); color: #2b1d11; font-weight: bold;">🎮 Mulai Game Quiz</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card article-card">
+                    <div class="article-img" style="background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=600&q=80');">
+                    </div>
+                    <div class="article-text">
+                        <h2>APA ITU NARKOBA?</h2>
+                        <p>Narkotika, psikotropika, dan bahan adiktif lainnya (narkoba) adalah zat atau obat buatan maupun alami yang apabila dikonsumsi mengakibatkan perubahan kesadaran, hilangnya rasa nyeri, penurunan fungsi organ vital, serta menimbulkan ketergantungan psikologis yang sangat kuat. Jauhi narkoba demi menjaga masa depan, kesehatan mental, serta keselamatan fisik generasi bangsa.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-cards-grid">
+                <div class="sub-card" onclick="openInteractiveModal('Modul Belajar', 'Panduan Lengkap Bahaya Zat Terlarang', 'Modul ini berisi pengenalan jenis-jenis narkotika (Golongan I, II, dan III), ciri-ciri fisik pengguna, serta bagaimana zat adiktif mempengaruhi sistem kerja saraf pusat manusia secara bertahap.')">
+                    <span>📖</span>
+                    <b>Modul Belajar</b>
+                    <span style="font-size: 0.8rem;">Panduan lengkap bahaya zat terlarang</span>
+                </div>
+                <div class="sub-card" onclick="openInteractiveModal('Tips Pencegahan', 'Cara Menjaga Diri & Lingkungan', '1. Perkuat iman dan moral.\n2. Pilih pertemanan yang sehat dan positif.\n3. Salurkan hobi ke kegiatan olahraga atau seni.\n4. Berani katakan TIDAK pada tawaran mencurigakan.')">
+                    <span>💡</span>
+                    <b>Tips Pencegahan</b>
+                    <span style="font-size: 0.8rem;">Cara menjaga diri dan lingkungan</span>
+                </div>
+                <div class="sub-card" onclick="openInteractiveModal('Dampak & Sanksi', 'Konsekuensi Hukum & Sosial', '• Dampak Sosial: Keretakan keluarga, pengucilan, dan hilangnya masa depan.\n• Sanksi Hukum: Dijerat UU Narkotika No. 35 Tahun 2009 dengan ancaman hukuman penjara bertahun-tahun hingga hukuman mati bagi pengedar.')">
+                    <span>⚖️</span>
+                    <b>Dampak & Sanksi</b>
+                    <span style="font-size: 0.8rem;">Konsekuensi hukum dan sosial</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="pencarian" class="section-content">
+            <div class="explore-search-bar">
+                <input type="text" id="searchInput" placeholder="Cari topik edukasi, pasal, atau pencegahan..." oninput="filterExploreGrid()">
+            </div>
+
+            <div class="explore-grid" id="exploreGrid"></div>
+        </section>
+
+        <section id="quiz" class="section-content">
+            <div class="quiz-container">
+                <h2>Kuis Edukasi Anti Narkoba</h2>
+                <div id="quiz-box">
+                    <div class="question-box" id="question-text">Pertanyaan akan dimuat di sini...</div>
+                    <div id="quizPopup" class="quiz-popup"></div>
+                    <div class="options-list" id="options-container"></div>
+                </div>
+                <div id="score-box" class="quiz-score" style="display: none;"></div>
+                <button id="restart-btn" class="mini-btn" style="margin-top: 15px; display: none; width: 100%; background: linear-gradient(135deg, #e0b080 0%, #9c714d 100%); color: #2b1d11; font-weight: bold;" onclick="restartQuiz()">Ulangi Kuis</button>
+            </div>
+        </section>
+
+        <section id="profil" class="section-content">
+            <div class="profile-details-card">
+                <div class="avatar-circle avatar-large" id="profileDetailAvatar">S</div>
+                <h2 id="profileDetailName" style="color: var(--accent-gold);">Nama Pengguna</h2>
+                <p id="profileDetailRole" style="color: var(--text-muted); font-size: 0.9rem;">Siswa / Pengguna Terdaftar</p>
+                
+                <div class="info-group" style="margin-top: 10px;">
+                    <span class="info-label">Email</span>
+                    <span class="info-value" id="profileDetailEmail">user@example.com</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Skor Kuis Tertinggi</span>
+                    <span class="info-value" id="profileDetailScore">0</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Status Keanggotaan</span>
+                    <span class="info-value" style="color: #4CAF50;">Aktif</span>
+                </div>
+
+                <button class="mini-btn" style="width: 100%; margin-top: 15px; background: linear-gradient(135deg, #c72e35 0%, #8a171d 100%); font-weight: bold;" onclick="logoutUser()">Keluar / Log Out</button>
+            </div>
+        </section>
+
+    </div>
+
+    <div class="reel-modal" id="reelModal">
+        <div class="reel-modal-content">
+            <button class="close-modal-btn" onclick="closeReelModal()">✕</button>
+            <div id="modalCategory" style="font-size: 0.85rem; color: var(--accent-gold); font-weight: bold; margin-bottom: 8px;"></div>
+            <h2 id="modalTitle" style="color: white; font-size: 1.3rem; margin-bottom: 12px;"></h2>
+            <p id="modalDesc" style="color: var(--text-muted); font-size: 1rem; line-height: 1.6; white-space: pre-line;"></p>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('beranda', this)">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Beranda
+        </button>
+        <button class="nav-item" onclick="switchTab('pencarian', this)">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            Pencarian
+        </button>
+        <button class="nav-item" onclick="switchTab('quiz', this)">
+            <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-6 15c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6.5c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5V7c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v3.5z"/></svg>
+            Game Kuis
+        </button>
+        <button class="nav-item" onclick="switchTab('profil', this)">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            Profil
+        </button>
+    </nav>
+
+    <script>
+        function updateRealTimeClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeString = `${hours}:${minutes}:${seconds}`;
+            const timerEl = document.getElementById('timer');
+            if (timerEl) {
+                timerEl.innerText = timeString;
+            }
+        }
+        setInterval(updateRealTimeClock, 1000);
+        updateRealTimeClock();
+
+        function openInteractiveModal(category, title, desc) {
+            document.getElementById('modalCategory').innerText = category;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('reelModal').style.display = 'flex';
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userScore');
+            window.location.href = 'index.html';
+        }
+
+        // Ambil data skor terbaru langsung dari database Neon saat dashboard dimuat
+        window.addEventListener('DOMContentLoaded', async () => {
+            const savedName = localStorage.getItem('userName') || 'Siswa Edukasi';
+            const savedEmail = localStorage.getItem('userEmail') || 'user@example.com';
+
+            document.getElementById('headerUserName').innerText = savedName;
+            document.getElementById('profileName').innerText = savedName;
+            document.getElementById('profileEmail').innerText = savedEmail;
+            document.getElementById('userAvatar').innerText = savedName.charAt(0).toUpperCase();
+
+            document.getElementById('profileDetailName').innerText = savedName;
+            document.getElementById('profileDetailEmail').innerText = savedEmail;
+            document.getElementById('profileDetailAvatar').innerText = savedName.charAt(0).toUpperCase();
+
+            // Fetch skor terbaru dari backend database
+            try {
+                const response = await fetch(`http://localhost:5000/api/get-score?email=${encodeURIComponent(savedEmail)}`);
+                const data = await response.json();
+                if (data.success) {
+                    const latestScore = data.quiz_score;
+                    localStorage.setItem('userScore', latestScore);
+
+                    document.getElementById('userScoreDisplay').innerText = latestScore;
+                    document.getElementById('profileDetailScore').innerText = latestScore;
+                    document.getElementById('statScoreTop').innerText = latestScore + ' Pts';
+                }
+            } catch (err) {
+                console.error('Gagal memuat skor dari database:', err);
+                // Fallback ke localStorage jika server offline
+                const fallbackScore = localStorage.getItem('userScore') || '0';
+                document.getElementById('userScoreDisplay').innerText = fallbackScore;
+                document.getElementById('profileDetailScore').innerText = fallbackScore;
+                document.getElementById('statScoreTop').innerText = fallbackScore + ' Pts';
+            }
+
+            loadExploreGrid();
+        });
+
+        function switchTab(sectionId, element) {
+            const sections = document.querySelectorAll('.section-content');
+            sections.forEach(sec => sec.classList.remove('active'));
+
+            document.getElementById(sectionId).classList.add('active');
+
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(nav => nav.classList.remove('active'));
+            if (element) {
+                element.classList.add('active');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        const reelsData = [
+    { category: "Pasal Hukum", title: "Pasal 111 UU Narkotika", desc: "Setiap orang yang tanpa hak atau melawan hukum menanam, memelihara, memiliki, menyimpan, menguasai, atau menyediakan Narkotika Golongan I dalam bentuk tanaman, dipidana dengan penjara seumur hidup atau pidana penjara paling singkat 4 tahun dan paling lama 12 tahun.", img: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 112 UU Narkotika", desc: "Setiap orang yang tanpa hak atau melawan hukum memiliki, menyimpan, menguasai, atau menyediakan Narkotika Golongan I bukan tanaman, diancam pidana penjara paling singkat 4 tahun dan paling lama 12 tahun.", img: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 113 UU Narkotika", desc: "Mengimpor, mengekspor, memproduksi, menaikkan, atau menyalurkan narkotika golongan I diancam pidana berat hingga hukuman mati.", img: "https://images.unsplash.com/photo-1453945619913-79ec89ba6e8e?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 114 UU Narkotika", desc: "Setiap orang yang tanpa hak menawarkan untuk dijual, menjual, membeli, atau menjadi perantara Narkotika Golongan I, dipidana mati atau penjara seumur hidup.", img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 115 UU Narkotika", desc: "Mengatur sanksi bagi pelaku yang membawa, mengirim, atau mengangkut Narkotika tanpa izin resmi dari pihak berwenang.", img: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 116 UU Narkotika", desc: "Mengatur pidana bagi pelaku yang menggunakan kekerasan memaksa orang lain mengonsumsi narkotika.", img: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 117 UU Narkotika", desc: "Sanksi hukum bagi pengedar yang melibatkan anak di bawah umur dalam peredaran gelap narkotika.", img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 118 UU Narkotika", desc: "Ketentuan pidana tambahan dan denda maksimal bagi sindikat narkotika terorganisir.", img: "https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 119 UU Narkotika", desc: "Ancaman pidana berlapis untuk tindak pidana pencucian uang hasil narkotika.", img: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 127 UU Narkotika", desc: "Setiap penyalah guna Narkotika Golongan I bagi diri sendiri dipidana penjara maksimal 4 tahun dan wajib menjalani rehabilitasi.", img: "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 128 UU Narkotika", desc: "Kewajiban orang tua atau wali untuk melaporkan anak pecandu di bawah umur agar mendapatkan rehabilitasi.", img: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 131 UU Narkotika", desc: "Setiap orang yang dengan sengaja tidak melaporkan adanya tindak pidana narkotika dapat dikenakan sanksi pidana.", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 132 UU Narkotika", desc: "Ancaman pidana bagi permufakatan jahat dalam peredaran gelap narkotika.", img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 133 UU Narkotika", desc: "Ketentuan hukum bagi percobaan atau pembantuan dalam tindak pidana narkotika.", img: "https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 134 UU Narkotika", desc: "Hak pecandu yang melapor untuk mendapatkan pengampunan pidana penjara melalui rehabilitasi medis.", img: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 135 UU Narkotika", desc: "Wewenang penyidik BNN dalam melakukan penyelidikan jaringan narkotika internasional.", img: "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 138 UU Narkotika", desc: "Pengawasan jalur perbatasan negara terhadap penyelundupan prekursor narkotika.", img: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Pasal 140 UU Narkotika", desc: "Peran serta masyarakat dalam membantu pencegahan dan pemberantasan narkoba.", img: "https://images.unsplash.com/photo-1609234656388-1ff55b063c18?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Undang-Undang Kesehatan", desc: "Sanksi hukum bagi pengedar obat keras daftar G tanpa izin edar resmi.", img: "https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pasal Hukum", title: "Peraturan Menteri Kesehatan", desc: "Daftar resmi penggolongan psikotropika dan zat adiktif di Indonesia.", img: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=400&q=80" },
+
+    { category: "Edukasi Remaja", title: "Mengapa Remaja Rentan?", desc: "Faktor utama remaja terjerumus narkoba adalah rasa ingin tahu tinggi, pencarian jati diri, dan tekanan pergaulan.", img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=400&q=80" },
+    { category: "Edukasi Remaja", title: "Tekanan Teman Sebaya (Peer Pressure)", desc: "Belajar mengatakan tidak pada ajakan teman yang merugikan masa depan.", img: "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=400&q=80" },
+    { category: "Edukasi Remaja", title: "Kesehatan Mental & Stres", desc: "Pelarian dari masalah keluarga menggunakan obat terlarang justru memperparah depresi.", img: "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&w=400&q=80" },
+    { category: "Edukasi Remaja", title: "Bijak Menggunakan Media Sosial", desc: "Waspadai modus operandi sindikat narkoba yang merekrut remaja via internet.", img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=400&q=80" },
+    { category: "Edukasi Remaja", title: "Membangun Kepercayaan Diri", desc: "Remaja yang percaya diri tidak mudah terpengaruh oleh bujukan negatif orang lain.", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=400&q=80" },
+    { category: "Edukasi Remaja", title: "Peran Komunikasi Keluarga", desc: "Pentingnya ruang terbuka bagi anak untuk bercerita tanpa rasa takut dihakimi.", img: "https://images.unsplash.com/photo-1609234656388-1ff55b063c18?auto=format&fit=crop&w=400&q=80" },
+    { category: "Edukasi Remaja", title: "Mengenal Emosi Negatif", desc: "Cara sehat menyalurkan amarah dan kesedihan tanpa lari ke zat adiktif.", img: "https://images.unsplash.com/photo-1511295742362-92c96b1fc485?auto=format&fit=crop&w=400&q=80" },
+    { category: "Edukasi Remaja", title: "Pentingnya Literasi Kesehatan", desc: "Memahami zat kimia apa saja yang masuk ke dalam tubuh manusia.", img: "https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=400&q=80" },
+    { category: "Edukasi Remaja", title: "Menetapkan Cita-Cita Sejak Dini", desc: "Fokus pada impian masa depan membuat remaja selektif dalam memilih pergaulan.", img: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=400&q=80" },
+    { category: "Edukasi Remaja", title: "Peran Aktif di Sekolah", desc: "Mengikuti OSIS, pramuka, atau ekstrakurikuler memperkuat karakter positif.", img: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=400&q=80" },
+
+    { category: "Bahaya Fisik", title: "Kerusakan Otak & Saraf", desc: "Zat adiktif merusak komunikasi sel saraf pusat, memicu halusinasi dan penurunan kognitif.", img: "https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=400&q=80" },
+    { category: "Bahaya Fisik", title: "Gagal Jantung & Paru", desc: "Stimulan kuat memacu kerja jantung berlebihan hingga berisiko henti jantung mendadak.", img: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=400&q=80" },
+    { category: "Bahaya Fisik", title: "Penurunan Imunitas Tubuh", desc: "Penggunaan jarum suntik bergantian menularkan HIV/AIDS dan Hepatitis B secara cepat.", img: "https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=400&q=80" },
+    { category: "Bahaya Fisik", title: "Insomnia Kronis", desc: "Gangguan pola tidur parah membuat tubuh lemas dan kestabilan emosi rusak total.", img: "https://images.unsplash.com/photo-1511295742362-92c96b1fc485?auto=format&fit=crop&w=400&q=80" },
+    { category: "Bahaya Fisik", title: "Kerusakan Hati & Ginjal", desc: "Organ detoksifikasi tubuh bekerja terlalu keras menyaring racun kimia berbahaya.", img: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=400&q=80" },
+    { category: "Bahaya Fisik", title: "Penurunan Berat Badan Drastis", desc: "Hilangnya nafsu makan secara ekstrem akibat gangguan metabolisme tubuh.", img: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=400&q=80" },
+    { category: "Bahaya Fisik", title: "Risiko Overdosis Fatal", desc: "Takaran zat yang berlebih melumpuhkan pusat pernapasan manusia dalam hitungan menit.", img: "https://images.unsplash.com/photo-1453945619913-79ec89ba6e8e?auto=format&fit=crop&w=400&q=80" },
+    { category: "Bahaya Fisik", title: "Gangguan Sistem Pencernaan", desc: "Mual, muntah kronis, dan luka lambung akibat racun zat sintetis.", img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=400&q=80" },
+    { category: "Bahaya Fisik", title: "Penuaan Dini Kulit", desc: "Kulit kusam, keriput dini, dan kerusakan jaringan sel kulit akibat dehidrasi akut.", img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=400&q=80" },
+    { category: "Bahaya Fisik", title: "Kehilangan Koordinasi Motorik", desc: "Kesulitan berjalan, berbicara jelas, dan merespons rangsangan sensorik dengan normal.", img: "https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=400&q=80" },
+
+    { category: "Pencegahan", title: "Peran Olahraga Rutin", desc: "Sepak bola, basket, atau atletik membantu melepaskan hormon endorfin alami.", img: "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pencegahan", title: "Menyalurkan Hobi Seni", desc: "Musik, teater, melukis, dan fotografi mengalihkan pikiran dari hal negatif.", img: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pencegahan", title: "Kegiatan Keagamaan & Moral", desc: "Memperkuat benteng spiritual dan etika dalam kehidupan sehari-hari.", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pencegahan", title: "Komunitas Positif", desc: "Bergaul dengan kelompok belajar dan organisasi positif yang saling mendukung.", img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pencegahan", title: "Edukasi Dini di Sekolah", desc: "Penyuluhan berkala dari guru dan pihak berwenang mengenai bahaya narkotika.", img: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pencegahan", title: "Pelatihan Ketahanan Mental", desc: "Melatih diri menghadapi tekanan hidup dan kegagalan secara sportif.", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pencegahan", title: "Pengawasan Orang Tua Bijak", desc: "Menjaga kedekatan emosional tanpa membatasi ruang gerak positif anak.", img: "https://images.unsplash.com/photo-1609234656388-1ff55b063c18?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pencegahan", title: "Kampanye Anti Narkoba", desc: "Aktif menyuarakan Tagar Generasi Sehat Tanpa Narkoba di lingkungan sekolah.", img: "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pencegahan", title: "Manajemen Waktu Produktif", desc: "Menyusun jadwal harian yang padat dengan kegiatan belajar dan prestasi.", img: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=400&q=80" },
+    { category: "Pencegahan", title: "Konseling Sebaya (Peer Counselor)", desc: "Melatih siswa terpilih menjadi pendengar yang baik bagi teman sebaya yang stres.", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80" },
+
+    { category: "Fakta & Mitos", title: "Mitos: 'Biar Kreatif & Fokus'", desc: "Fakta: Narkoba merusak otak dan menurunkan drastis prestasi belajar serta kreativitas.", img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=400&q=80" },
+    { category: "Fakta & Mitos", title: "Mitos: 'Coba Sekali Tidak Apa-apa'", desc: "Fakta: Sekali mencoba, zat adiktif memicu adiksi kimiawi yang sulit dihentikan.", img: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=400&q=80" },
+    { category: "Fakta & Mitos", title: "Mitos: 'Obat Tenang Alami'", desc: "Fakta: Penggunaan obat penenang tanpa resep dokter adalah tindakan ilegal merusak organ.", img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=400&q=80" },
+    { category: "Fakta & Mitos", title: "Mitos: 'Bisa Berhenti Kapan Saja'", desc: "Fakta: Ketergantungan psikologis dan fisik mengubah fungsi normal otak pecandu.", img: "https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=400&q=80" },
+    { category: "Fakta & Mitos", title: "Mitos: 'Menghilangkan Beban Hidup'", desc: "Fakta: Masalah justru bertambah berat karena memicu masalah hukum dan kesehatan.", img: "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&w=400&q=80" },
+    { category: "Fakta & Mitos", title: "Mitos: 'Aman Asal Dosis Kecil'", desc: "Fakta: Tubuh manusia lama-kelamaan akan menoleransi dosis dan menuntut lebih banyak.", img: "https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=400&q=80" },
+    { category: "Fakta & Mitos", title: "Mitos: 'Hanya Masalah Pilihan Pribadi'", desc: "Fakta: Peredaran gelap adalah kejahatan terstruktur yang merusak tatanan negara.", img: "https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=400&q=80" },
+    { category: "Fakta & Mitos", title: "Mitos: 'Vitamin Perangsang Energi'", desc: "Fakta: Zat stimulan menguras energi cadangan tubuh secara paksa hingga kolaps.", img: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=400&q=80" },
+    { category: "Fakta & Mitos", title: "Mitos: 'Pecandu Tidak Bisa Sembuh'", desc: "Fakta: Melalui rehabilitasi medis dan niat kuat, mantan pecandu bisa pulih total.", img: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=400&q=80" },
+    { category: "Fakta & Mitos", title: "Mitos: 'Polisi Tidak Tahu Selama Hati-hati'", desc: "Fakta: Jaringan siber BNN memantau ketat transaksi mencurigakan di dunia maya.", img: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80" },
+
+    { category: "Lembaga Negara", title: "Peran BNN (Badan Narkotika Nasional)", desc: "Lembaga pemerintah nonkementerian pencegah dan pemberantas penyalahgunaan narkotika.", img: "https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=400&q=80" },
+    { category: "Lembaga Negara", title: "Balai Rehabilitasi BNN", desc: "Fasilitas medis resmi pemulihan korban narkoba di berbagai wilayah Indonesia.", img: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=400&q=80" },
+    { category: "Lembaga Negara", title: "Peran Kepolisian Republik Indonesia", desc: "Satuan reserse narkoba yang aktif membongkar bandar dan jaringan pengedar.", img: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80" },
+    { category: "Lembaga Negara", title: "Kementerian Kesehatan", desc: "Pengaturan ketat distribusi obat-obatan berisiko tinggi dan fasilitas kesehatan.", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80" },
+    { category: "Lembaga Negara", title: "Peran Kementerian Pendidikan", desc: "Integrasi kurikulum pendidikan karakter dan bahaya narkoba di sekolah.", img: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=400&q=80" },
+    { category: "Lembaga Negara", title: "Peran Bea Cukai", desc: "Menjaga pelabuhan dan bandara dari masuknya narkotika selundupan antarnegara.", img: "https://images.unsplash.com/photo-1453945619913-79ec89ba6e8e?auto=format&fit=crop&w=400&q=80" },
+    { category: "Lembaga Negara", title: "Dinas Sosial", desc: "Pendampingan sosial bagi mantan pecandu agar diterima kembali di masyarakat.", img: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=400&q=80" },
+    { category: "Lembaga Negara", title: "Layanan Call Center 184 BNN", desc: "Hotline pengaduan masyarakat dan konsultasi rehabilitasi gratis.", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80" },
+    { category: "Lembaga Negara", title: "Peran Puskesmas", desc: "Pemeriksaan kesehatan awal dan rujukan bagi masyarakat yang membutuhkan konseling.", img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=400&q=80" },
+    { category: "Lembaga Negara", title: "Satgas Anti Narkoba Sekolah", desc: "Komunitas pelajar pelopor pengawas kebersihan lingkungan sekolah dari narkoba.", img: "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=400&q=80" },
+
+    { category: "Dampak Sosial", title: "Keretakan Keluarga", desc: "Hilangnya kepercayaan orang tua dan konflik berkepanjangan di dalam rumah.", img: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=400&q=80" },
+    { category: "Dampak Sosial", title: "Pengucilan Masyarakat", desc: "Stigma negatif dari tetangga membuat mantan pecandu sulit berinteraksi sosial.", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80" },
+    { category: "Dampak Sosial", title: "Hilangnya Masa Depan", desc: "Putus sekolah dan hilangnya kesempatan meraih pekerjaan impian akibat catatan hukum.", img: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=400&q=80" },
+    { category: "Dampak Sosial", title: "Peningkatan Angka Kriminalitas", desc: "Kecanduan memaksa pelaku melakukan pencurian demi membeli barang haram.", img: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80" },
+    { category: "Dampak Sosial", title: "Kerugian Finansial Keluarga", desc: "Harta benda keluarga habis terjual untuk membiayai pengobatan dan kecanduan.", img: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=400&q=80" },
+    { category: "Dampak Sosial", title: "Hilangnya Rasa Empati", desc: "Perubahan kepribadian drastis membuat pecandu tidak peduli pada penderitaan sekitar.", img: "https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=400&q=80" },
+    { category: "Dampak Sosial", title: "Putus Hubungan Pertemanan", desc: "Teman-teman positif menjauh karena perilaku yang membahayakan keselamatan.", img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=400&q=80" },
+    { category: "Dampak Sosial", title: "Ancaman Keamanan Lingkungan", desc: "Masuknya jaringan pengedar merusak ketenteraman warga di suatu wilayah.", img: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=400&q=80" },
+    
+    { category: "Rehabilitasi", title: "Pentingnya Detoksifikasi", desc: "Tahap awal pembersihan racun kimia dari dalam tubuh pecandu di bawah pengawasan dokter.", img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=400&q=80" },
+    { category: "Rehabilitasi", title: "Rehabilitasi Medis", desc: "Pemulihan fungsi organ tubuh yang rusak akibat zat adiktif menggunakan obat pemulih.", img: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=400&q=80" },
+    { category: "Rehabilitasi", title: "Rehabilitasi Sosial", desc: "Bimbingan psikologis dan mental agar mantan pecandu siap kembali bersosialisasi.", img: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=400&q=80" },
+    { category: "Rehabilitasi", title: "Peran Konselor Adiksi", desc: "Tenaga ahli pendamping proses pemulihan mental dan emosional pasien.", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80" },
+    { category: "Rehabilitasi", title: "Dukungan Keluarga Terdekat", desc: "Kehangatan keluarga adalah obat utama penyembuhan psikologis korban narkoba.", img: "https://images.unsplash.com/photo-1609234656388-1ff55b063c18?auto=format&fit=crop&w=400&q=80" },
+    { category: "Rehabilitasi", title: "Terapi Kelompok (Support Group)", desc: "Sesi berbagi pengalaman antar-mantan pecandu untuk saling menguatkan tekad.", img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=400&q=80" },
+    { category: "Rehabilitasi", title: "Pencegahan Kekambuhan (Relapse)", desc: "Strategi mengenali pemicu emosional agar tidak kembali menggunakan zat terlarang.", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=400&q=80" },
+    { category: "Rehabilitasi", title: "Pelatihan Keterampilan Kerja", desc: "Bekal keahlian mandiri bagi korban rehabilitasi agar siap mendapat pekerjaan halal.", img: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=400&q=80" },
+    { category: "Rehabilitasi", title: "Pemulihan Spiritual", desc: "Mendekatkan diri kembali pada nilai agama dan moral sebagai pegangan hidup.", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=400&q=80" },
+    { category: "Rehabilitasi", title: "Evaluasi Berkala Pasca-Rehab", desc: "Pemantauan rutin kondisi kesehatan fisik dan mental setelah keluar dari pusat pemulihan.", img: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=400&q=80" },
+
+    { category: "Tips Menolak", title: "Katakan 'TIDAK' dengan Tegas", desc: "Ucapkan penolakan tanpa ragu saat ada ajakan mencobanya dari siapa pun.", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80" },
+    { category: "Tips Menolak", title: "Alihkan Topik Pembicaraan", desc: "Segera ubah arah obrolan atau ajak membahas hal lain yang lebih positif.", img: "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=400&q=80" },
+    { category: "Tips Menolak", title: "Tinggalkan Lokasi Segera", desc: "Jangan ragu berjalan pergi meninggalkan lingkungan yang berpotensi membahayakan.", img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=400&q=80" },
+    { category: "Tips Menolak", title: "Cari Perlindungan Orang Dewasa", desc: "Laporkan segera kepada guru, orang tua, atau pihak berwajib jika ada paksaan.", img: "https://images.unsplash.com/photo-1609234656388-1ff55b063c18?auto=format&fit=crop&w=400&q=80" },
+    { category: "Tips Menolak", title: "Hindari Tempat Sepupu Rawan", desc: "Jauhi tempat-tempat nongkrong malam yang tidak jelas aktivitas kumpulnya.", img: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=400&q=80" },
+    { category: "Tips Menolak", title: "Selektif Menerima Pemberian", desc: "Waspadai makanan, minuman, atau rokok dari orang yang belum dikenal baik.", img: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=400&q=80" },
+    { category: "Tips Menolak", title: "Bangun Citra Diri Tegas", desc: "Tunjukkan kepada lingkungan bahwa kamu adalah remaja yang memegang prinsip kuat.", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=400&q=80" },
+    { category: "Tips Menolak", title: "Gunakan Alasan Rasional", desc: "Gunakan alasan kesehatan atau kegiatan penting untuk menolak ajakan nongkrong negatif.", img: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=400&q=80" },
+    { category: "Tips Menolak", title: "Waspadai Akun Media Sosial Asing", desc: "Jangan sembarangan menerima ajanan kenalan baru di internet yang mencurigakan.", img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=400&q=80" },
+    { category: "Tips Menolak", title: "Jadilah Teladan Teman Sebaya", desc: "Ajak sahabat terdekatmu untuk bersama-sama membentengi diri dari bahaya narkotika.", img: "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=400&q=80" },
+    { category: "Tips Menolak", title: "Berani Melapor", desc: "Melaporkan peredaran narkoba adalah wujud pahlawan masa kini bagi bangsa.", img: "https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=400&q=80" },
+    { category: "Generasi Sehat", title: "Pola Tidur Sehat", desc: "Istirahat cukup 7-8 jam sehari menjaga kestabilan mental dan fisik remaja.", img: "https://images.unsplash.com/photo-1511295742362-92c96b1fc485?auto=format&fit=crop&w=400&q=80" },
+    { category: "Generasi Sehat", title: "Nutrisi Seimbang", desc: "Makanan bergizi memperkuat daya tahan tubuh dan fungsi sel saraf otak.", img: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=400&q=80" },
+    { category: "Generasi Sehat", title: "Menghindari Rokok & Vape", desc: "Gerbang awal penyalahgunaan narkotika sering kali bermula dari kecanduan nikotin rokok.", img: "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?auto=format&fit=crop&w=400&q=80" },
+    { category: "Generasi Sehat", title: "Manajemen Stres Sekolah", desc: "Mengatasi tekanan tugas ujian dengan hobi positif, bukan pelarian berbahaya.", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=400&q=80" },
+    { category: "Generasi Sehat", title: "Pentingnya Meditasi & Relaksasi", desc: "Menjaga kejernihan pikiran agar terhindar dari kecemasan berlebihan.", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=400&q=80" },
+    { category: "Generasi Sehat", title: "Kegiatan Sosial Masyarakat", desc: "Terlibat dalam bakti sosial melatih empati dan jiwa kepemimpinan remaja.", img: "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=400&q=80" },
+    { category: "Generasi Sehat", title: "Edukasi Bahaya Alkohol", desc: "Minuman beralkohol merusak kesadaran dan memicu tindakan melanggar hukum.", img: "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?auto=format&fit=crop&w=400&q=80" },
+    { category: "Generasi Sehat", title: "Membangun Hubungan Sehat", desc: "Berteman dengan orang-orang yang saling mendukung dalam kebaikan dan prestasi.", img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=400&q=80" },
+    { category: "Generasi Sehat", title: "Menyalurkan Kreativitas Digital", desc: "Membuat karya seni digital, coding, atau video edukasi positif untuk sesama.", img: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=400&q=80" },
+    { category: "Generasi Sehat", title: "Keteguhan Prinsip Hidup", desc: "Memiliki pendirian yang kokoh untuk tidak goyah menghadapi bujukan negatif.", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=400&q=80" },
+    { category: "Generasi Sehat", title: "Masa Depan Gemilang Tanpa Batas", desc: "Raih cita-cita setinggi langit dengan menjaga raga dan pikiran tetap bersih.", img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=400&q=80" }
+    ];
+
+        function loadExploreGrid(data = reelsData) {
+            const container = document.getElementById('exploreGrid');
+            container.innerHTML = '';
+
+            data.forEach((item) => {
+                const card = document.createElement('div');
+                card.className = 'explore-item';
+                card.style.backgroundImage = `url('${item.img}')`;
+                card.onclick = () => openInteractiveModal(item.category, item.title, item.desc);
+
+                card.innerHTML = `
+                    <div class="explore-item-icon">🎥</div>
+                    <div class="explore-item-title">${item.title}</div>
+                    <div class="explore-item-tag">${item.category}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterExploreGrid() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filteredData = reelsData.filter(item => 
+                item.title.toLowerCase().includes(query) || 
+                item.category.toLowerCase().includes(query) ||
+                item.desc.toLowerCase().includes(query)
+            );
+            loadExploreGrid(filteredData);
+        }
+
+        function closeReelModal() {
+            document.getElementById('reelModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('reelModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        const quizData = [
+            {
+                question: "Apa dampak utama penyalahgunaan narkoba terhadap kesehatan fisik?",
+                options: [
+                    "Meningkatkan kebugaran tubuh",
+                    "Merusak organ vital seperti otak dan jantung",
+                    "Membuat tidur lebih nyenyak secara alami",
+                    "Memperkuat sistem kekebalan tubuh"
+                ],
+                correct: 1
+            },
+            {
+                question: "Manakah tindakan yang paling tepat jika ada teman yang menawarkan narkoba?",
+                options: [
+                    "Mencoba sedikit saja",
+                    "Menerima lalu menyimpannya",
+                    "Menolak dengan tegas dan segera menjauh",
+                    "Diam saja mengikuti ajakan"
+                ],
+                correct: 2
+            },
+            {
+                question: "Undang-undang di Indonesia mengatur tentang sanksi berat bagi pengedar dan penyalahguna narkotika demi...",
+                options: [
+                    "Melindungi generasi bangsa dari kehancuran",
+                    "Menambah pemasukan negara",
+                    "Membatasi pergaulan remaja",
+                    "Membuat resah masyarakat"
+                ],
+                correct: 0
+            },
+            {
+                question: "Apa arti dari istilah kecanduan (adiksi) narkoba?",
+                options: [
+                    "Kondisi tubuh yang merasa segar setelah mengonsumsi",
+                    "Ketergantungan fisik dan mental yang sulit dihentikan",
+                    "Kemampuan tubuh menolak zat berbahaya",
+                    "Kebiasaan minum obat sesuai resep dokter"
+                ],
+                correct: 1
+            },
+            {
+                question: "Lembaga resmi di Indonesia yang bertugas melakukan pencegahan dan pemberantasan penyalahgunaan narkoba adalah...",
+                options: [
+                    "KPK",
+                    "BMKG",
+                    "BNN (Badan Narkotika Nasional)",
+                    "BPOM"
+                ],
+                correct: 2
+            },
+            {
+                question: "Salah satu dampak psikologis/sosial dari pengguna narkoba adalah...",
+                options: [
+                    "Hubungan dengan keluarga menjadi lebih harmonis",
+                    "Prestasi belajar/kerja meningkat tajam",
+                    "Perubahan perilaku menjadi emosional dan mengisolasi diri",
+                    "Mendapatkan banyak teman baru yang positif"
+                ],
+                correct: 2
+            },
+            {
+                question: "Langkah terbaik untuk mengisi waktu luang agar terhindar dari pengaruh narkoba adalah...",
+                options: [
+                    "Melakukan kegiatan positif seperti olahraga dan seni",
+                    "Nongkrong hingga larut malam tanpa tujuan",
+                    "Menyendiri di kamar sepanjang hari",
+                    "Mengikuti ajakan teman yang baru dikenal tanpa ragu"
+                ],
+                correct: 0
+            },
+            {
+                question: "Mengapa remaja sering menjadi sasaran empuk peredaran narkoba?",
+                options: [
+                    "Remaja memiliki banyak uang",
+                    "Rasa ingin tahu tinggi dan masih dalam pencarian jati diri",
+                    "Remaja tidak bisa dipidana secara hukum",
+                    "Narkoba diciptakan khusus untuk remaja"
+                ],
+                correct: 1
+            },
+            {
+                question: "Proses pemulihan bagi penderita ketergantungan narkoba agar bisa kembali ke masyarakat disebut...",
+                options: [
+                    "Karantina",
+                    "Rehabilitasi",
+                    "Isolasi",
+                    "Relaksasi"
+                ],
+                correct: 1
+            },
+            {
+                question: "Apa bentuk peran siswa dalam mendukung gerakan anti narkoba di sekolah?",
+                options: [
+                    "Menjauhi teman yang sedang bermasalah",
+                    "Ikut menyebarkan informasi positif dan aktif di kegiatan sekolah",
+                    "Pura-pura tidak tahu jika ada pelanggaran",
+                    "Membawa obat-obatan luar ke sekolah"
+                ],
+                correct: 1
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function updateAchievementProgress() {
+            const percentage = Math.round((currentQuestion / quizData.length) * 100);
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const statProgressTop = document.getElementById('statProgressTop');
+            const statScoreTop = document.getElementById('statScoreTop');
+
+            if (progressFill && progressText) {
+                progressFill.style.width = percentage + '%';
+                progressText.innerText = percentage + '%';
+            }
+            if (statProgressTop) {
+                statProgressTop.innerText = percentage + '%';
+            }
+            if (statScoreTop) {
+                statScoreTop.innerText = score + ' Pts';
+            }
+        }
+
+        function loadQuiz() {
+            const qText = document.getElementById('question-text');
+            const optsContainer = document.getElementById('options-container');
+            const scoreBox = document.getElementById('score-box');
+            const restartBtn = document.getElementById('restart-btn');
+            const popup = document.getElementById('quizPopup');
+            
+            popup.style.display = 'none';
+            popup.className = 'quiz-popup';
+
+            scoreBox.style.display = 'none';
+            restartBtn.style.display = 'none';
+            document.getElementById('quiz-box').style.display = 'block';
+
+            if (currentQuestion < quizData.length) {
+                const currentQ = quizData[currentQuestion];
+                qText.innerText = `Pertanyaan ${currentQuestion + 1} dari ${quizData.length}:\n${currentQ.question}`;
+                optsContainer.innerHTML = '';
+
+                currentQ.options.forEach((opt, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt;
+                    btn.onclick = () => selectAnswer(index);
+                    optsContainer.appendChild(btn);
+                });
+            } else {
+                document.getElementById('quiz-box').style.display = 'none';
+                scoreBox.style.display = 'block';
+                const maxScore = quizData.length * 10;
+                scoreBox.innerText = `Kuis Selesai! Skor Anda: ${score} dari ${maxScore} poin.`;
+                
+                // Update UI display lokal
+                document.getElementById('userScoreDisplay').innerText = score;
+                document.getElementById('profileDetailScore').innerText = score;
+                localStorage.setItem('userScore', score);
+
+                // Kirim skor ke backend database Neon
+                const userEmail = localStorage.getItem('userEmail');
+                if (userEmail) {
+                    fetch('http://localhost:5000/api/save-score', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: userEmail, score: score })
+                    })
+                    .then(res => res.json())
+                    .then(data => console.log(data.message))
+                    .catch(err => console.error('Gagal simpan skor:', err));
+                }
+
+                restartBtn.style.display = 'block';
+            }
+            updateAchievementProgress();
+        }
+
+        function selectAnswer(selectedIndex) {
+            const currentQ = quizData[currentQuestion];
+            const popup = document.getElementById('quizPopup');
+            const optionButtons = document.querySelectorAll('.option-btn');
+
+            optionButtons.forEach(btn => btn.disabled = true);
+
+            if (selectedIndex === currentQ.correct) {
+                score += 10;
+                popup.innerText = "✔ Jawaban Benar!";
+                popup.className = "quiz-popup success";
+            } else {
+                popup.innerText = "✖ Jawaban Kurang Tepat!";
+                popup.className = "quiz-popup error";
+            }
+            
+            popup.style.display = 'block';
+            updateAchievementProgress();
+
+            setTimeout(() => {
+                currentQuestion++;
+                loadQuiz();
+            }, 1200);
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            loadQuiz();
+        }
+
+        loadQuiz();
+    </script>
+</body>
+</html>
